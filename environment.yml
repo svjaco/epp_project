@@ -1,0 +1,6 @@
+name: epp_project_sven_jacobs
+
+channels:
+  - conda-forge
+
+dependencies:
