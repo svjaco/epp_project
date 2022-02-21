@@ -131,3 +131,80 @@ LP <- function(x, X, Y, kernel = epanechnikov, bw, degree = 1L) {
          slopes = slopes, curvatures = curvatures)
 
 }
+
+##########################
+#    Boundary kernels    #
+##########################
+
+# Note:
+#
+# The following boundary kernels rely on Müller (1991).
+# However, the left boundary kernels of Müller are right boundary kernels for us, and vice versa.
+# This is because of the different definition of the kernel estimator concerning the argument of the kernel.
+# Müller uses K(x - X), whereas we define K(X - x).
+
+# Left Uniform kernels
+uniform_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 1/(1+rho)*(1 + 3*((1-rho)/(1+rho))^2 - 6*((1-rho)/(1+rho)^2)*u), 0)
+
+}
+
+# Left Epanechnikov kernels
+epanechnikov_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 6*(1-u)*(rho+u)*(1/(1+rho)^3)*(1 + 5*((1-rho)/(1+rho))^2 - 10*((1-rho)/(1+rho)^2)*u), 0)
+
+}
+
+# Left Biweight kernels
+biweight_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 30*(1-u)^2*(rho+u)^2*(1/(1+rho)^5)*(1 + 7*((1-rho)/(1+rho))^2 - 14*((1-rho)/(1+rho)^2)*u), 0)
+
+}
+
+# Left Triweight kernels
+triweight_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 140*(1-u)^3*(rho+u)^3*(1/(1+rho)^7)*(1 + 9*((1-rho)/(1+rho))^2 - 18*((1-rho)/(1+rho)^2)*u), 0)
+
+}
+
+# Note:
+#
+# The following boundary kernels rely on Müller and Wang (1994).
+# These alternative kernels have greater asymptotic efficiency
+# at the cost of discontinuity at their endpoints.
+
+# Left alternative Uniform kernels
+uniform_alt_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 2/(1+rho)^3*(-3*(1-rho)*u + 2*(1-rho+rho^2)), 0)
+
+}
+
+# Left alternative Epanechnikov kernels
+epanechnikov_alt_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 12/(1+rho)^4*(1-u)*(-(1-2*rho)*u + 0.5*(3*rho^2-2*rho+1)), 0)
+
+}
+
+# Left alternative Biweight kernels
+biweight_alt_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 15/(1+rho)^5*(1-u)^2*(rho+u)*(-2*u*(5*(1-rho)/(1+rho)-1) + 3*rho-1 + 5*(1-rho)^2/(1+rho)), 0)
+
+}
+
+# Left alternative Triweight kernels
+triweight_alt_left <- function(u, rho) {
+
+    ifelse(u >= -rho & u <= 1, 70/(1+rho)^7*(1-u)^3*(rho+u)^2*(-2*u*(7*(1-rho)/(1+rho)-1) + 3*rho-1 + 7*(1-rho)^2/(1+rho)), 0)
+
+}
+
+# List with all boundary kernels
+boundary_kernel_list <- list(uniform_left, epanechnikov_left, biweight_left, triweight_left,
+                             uniform_alt_left, epanechnikov_alt_left, biweight_alt_left, triweight_alt_left)
