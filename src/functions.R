@@ -275,3 +275,49 @@ NW_boundary <- function(x, X, Y, bw,
     list(estimates = estimates, effective_kernels = effective_kernels)
 
 }
+
+######################################################
+#    Leave-one-out cross-validation (LOOCV) error    #
+######################################################
+
+CV_error_fun <- function(X, Y, kernel = epanechnikov, bw, degree = 1L,
+                         kernel_left = epanechnikov_left,
+                         boundary_left = NA, boundary_right = NA,
+                         boundary_adjustment = FALSE) {
+
+    # input: - X: data for the regressor (vector)
+    #        - Y: data for the regressand (vector)
+    #        - kernel: kernel (function), with default
+    #        - bw: bandwidth (scalar)
+    #        - degree: degree of the locally fitted polynomial (integer), with default
+    #        - kernel_left: left boundary kernels (function), with default
+    #        - boundary_left: lower boundary of the support of X (scalar), with default
+    #        - boundary_right: upper boundary of the support of X (scalar), with default
+    #        - boundary_adjustment: explicit boundary adjustment (boolean), with default
+
+    # output: - CV_error: LOOCV error for bandwidth bw (scalar)
+
+    # Error messages
+    if (degree != 0L & boundary_adjustment == TRUE) {
+        stop("Explicit boundary adjustment can only be used for the Nadaraya-Watson estimator (degree = 0).")
+    }
+
+    if (boundary_adjustment == FALSE) {
+
+        LP_output <- LP(x = X, X = X, Y = Y, kernel = kernel, bw = bw, degree = degree)
+        estimates <- LP_output$estimates
+        effective_kernels <- LP_output$effective_kernels
+
+    } else if (boundary_adjustment == TRUE) {
+
+        NW_boundary_output <- NW_boundary(x = X, X = X, Y = Y, bw = bw,
+                                          kernel_interior = kernel, kernel_left = kernel_left,
+                                          boundary_left = boundary_left, boundary_right = boundary_right)
+        estimates <- NW_boundary_output$estimates
+        effective_kernels <- NW_boundary_output$effective_kernels
+
+    }
+
+    CV_error <- 1/length(Y) * sum(((Y - estimates)/(1 - diag(effective_kernels)))^2)
+
+}
