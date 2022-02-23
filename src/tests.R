@@ -124,3 +124,14 @@ NW_boundary_left_boundary_too_large <- NW_boundary(x = X, X = X, Y = Y, bw = bw,
                                                    boundary_left = 0.5, boundary_right = 1)
 NW_boundary_right_boundary_too_small <- NW_boundary(x = X, X = X, Y = Y, bw = bw,
                                                     boundary_left = 0, boundary_right = 0.5)
+
+################################################################################
+#                 Tests for CV_error_fun function (LOOCV error)                #
+################################################################################
+
+######################################
+#    Checks for messages (errors)    #
+######################################
+
+CV_error_disallowed_boundary_adjustment <- CV_error_fun(X = X, Y = Y, bw = bw, degree = 1L,
+                                                        boundary_adjustment = TRUE)
