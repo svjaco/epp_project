@@ -135,3 +135,50 @@ NW_boundary_right_boundary_too_small <- NW_boundary(x = X, X = X, Y = Y, bw = bw
 
 CV_error_disallowed_boundary_adjustment <- CV_error_fun(X = X, Y = Y, bw = bw, degree = 1L,
                                                         boundary_adjustment = TRUE)
+
+################################################################################
+#              Tests for bw_CV_fun function (CV optimal bandwidth)             #
+################################################################################
+
+########################################
+#    Checks for messages (warnings)    #
+########################################
+
+# Selected bandwidth coincides with the smallest grid value (see also plot)
+bw_CV_fun(X = X, Y = Y, bw_grid = seq(0.075, 0.2, length.out = 100))
+# Expanding the grid reveals that global minimum was not reached (see also plot)
+bw_CV_fun(X = X, Y = Y, bw_grid = seq(0.05, 0.2, length.out = 100))
+
+#########################################
+#    Checks for CV optimal bandwidth    #
+#########################################
+
+# Note:
+#
+# To search for the minimum, the package locpol uses a combination of golden
+# section search and successive parabolic interpolation.
+# In contrast, we perform explicit grid search.
+
+bw_grid <- seq(0.05, 0.2, length.out = 1000)
+interval <- c(min(bw_grid), max(bw_grid))
+
+# Nadaraya-Watson (degree = 0)
+bw_CV_NW_own <- suppressWarnings(bw_CV_fun(X = X, Y = Y, degree = 0L, plot = TRUE,
+                                 bw_grid = bw_grid))
+bw_CV_NW_locpol <- regCVBwSelC(x = X, y = Y, deg = 0, kernel = EpaK,
+                               interval = interval)
+all.equal(round(bw_CV_NW_own, 3), round(bw_CV_NW_locpol, 3)) # Should yield TRUE
+
+# Local linear (degree = 1)
+bw_CV_LL_own <- bw_CV_fun(X = X, Y = Y, degree = 1L, plot = TRUE,
+                          bw_grid = bw_grid)
+bw_CV_LL_locpol <- regCVBwSelC(x = X, y = Y, deg = 1, kernel = EpaK,
+                               interval = interval)
+all.equal(round(bw_CV_LL_own, 3), round(bw_CV_LL_locpol, 3)) # Should yield TRUE
+
+# Higher degree (degree = 3)
+bw_CV_cubic_own <- suppressMessages(bw_CV_fun(X = X, Y = Y, degree = 3L, plot = TRUE,
+                                    bw_grid = bw_grid))
+bw_CV_cubic_locpol <- regCVBwSelC(x = X, y = Y, deg = 3, kernel = EpaK,
+                                  interval = interval)
+all.equal(round(bw_CV_cubic_own, 3), round(bw_CV_cubic_locpol, 3)) # Should yield TRUE
