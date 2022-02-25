@@ -321,3 +321,57 @@ CV_error_fun <- function(X, Y, kernel = epanechnikov, bw, degree = 1L,
     CV_error <- 1/length(Y) * sum(((Y - estimates)/(1 - diag(effective_kernels)))^2)
 
 }
+
+##############################
+#    CV optimal bandwidth    #
+##############################
+
+bw_CV_fun <- function(X, Y, kernel = epanechnikov, bw_grid, degree = 1L,
+                      kernel_left = epanechnikov_left,
+                      boundary_left = NA, boundary_right = NA,
+                      boundary_adjustment = FALSE,
+                      plot = TRUE) {
+
+    # input: - X: data for the regressor (vector)
+    #        - Y: data for the regressand (vector)
+    #        - kernel: kernel (function), with default
+    #        - bw_grid: bandwidth grid to find global minimum of CV error (vector)
+    #        - degree: degree of the locally fitted polynomial (integer), with default
+    #        - kernel_left: left boundary kernels (function), with default
+    #        - boundary_left: lower boundary of the support of X (scalar), with default
+    #        - boundary_right: upper boundary of the support of X (scalar), with default
+    #        - boundary_adjustment: explicit boundary adjustment (boolean), with default
+    #        - plot: plot CV error over bandwidth grid (boolean), with default
+
+    # output: - bw_CV: CV optimal bandwidth (scalar)
+    #         - plot of CV errors if plot == TRUE (plot)
+
+    CV_errors <- sapply(bw_grid, function(bw) {
+
+        CV_error_fun(X = X, Y = Y, kernel = kernel, bw, degree = degree,
+                     kernel_left = kernel_left,
+                     boundary_left = boundary_left, boundary_right = boundary_right,
+                     boundary_adjustment = boundary_adjustment)
+
+    })
+
+    bw_CV <- bw_grid[which.min(CV_errors)]
+
+    if (bw_CV == bw_grid[1] | bw_CV == bw_grid[length(bw_grid)]) {
+        warning("Selected bandwidth equals the smallest or largest grid value.
+                You may wish to expand the grid after consulting the plot of the CV errors.")
+    }
+
+    if (plot == TRUE) {
+
+        plot(bw_grid, CV_errors,
+             xlab = "bw", ylab = "CV error", cex.lab = 1.25, cex.axis = 1.25, cex = 0.75)
+        rug(bw_grid, ticksize = 0.015)
+        abline(v = bw_CV, col = "red")
+        legend("top", legend = bquote(paste("bw"["CV"]*" = ", .(round(bw_CV, 3)))), bty = "n", cex = 1.25)
+
+    }
+
+    return(bw_CV)
+
+}
