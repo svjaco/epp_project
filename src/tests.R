@@ -15,10 +15,13 @@ set.seed(123) # Seed for reproducibility
 
 # Packages
 library(locpol) # Kernel local polynomial regression with weights
+library(np) # Nonparametric kernel smoothing methods for mixed data types
 
 # We use the package "locpol" (published on CRAN) to validate our
 # implementation of the local polynomial estimator and
 # the cross-validated bandwidth selector.
+# Due to one issue with this package (see below),
+# also the package "np" is used.
 
 ################################################################################
 #                           Generating example data                            #
@@ -59,11 +62,23 @@ LP_higher_degree <- LP(x = X, X = X, Y = Y, bw = bw, degree = 3L)
 ##########################################################
 
 # Nadaraya-Watson (degree = 0)
-output_NW_LP <- LP(x = X, X = X, Y = Y, bw = bw, degree = 0L)
+
+#output_NW_LP <- LP(x = X, X = X, Y = Y, bw = bw, degree = 0L)
+#estimates_NW_LP <- output_NW_LP$estimates
+#output_NW_locpol <- locpol(Y ~ X, df, bw = bw, deg = 0) # locpol uses the Epanechnikov kernel by default
+#estimates_NW_locpol <- output_NW_locpol$lpFit$Y
+#all.equal(estimates_NW_LP, estimates_NW_locpol) # Should yield TRUE
+
+output_NW_LP <- LP(x = X, X = X, Y = Y, kernel = uniform, bw = bw, degree = 0L)
 estimates_NW_LP <- output_NW_LP$estimates
-output_NW_locpol <- locpol(Y ~ X, df, bw = bw, deg = 0) # locpol uses the Epanechnikov kernel by default
-estimates_NW_locpol <- output_NW_locpol$lpFit$Y
-all.equal(estimates_NW_LP, estimates_NW_locpol) # Should yield TRUE
+output_NW_npreg <- npreg(Y ~ X, ckertype = "uniform", bws = bw, regtype = "lc")
+estimates_NW_npreg <- output_NW_npreg$mean
+all.equal(estimates_NW_LP, estimates_NW_npreg) # Should yield TRUE
+
+# The direct computation of the Nadaraya-Watson estimates via the locpol
+# package results in an error.
+# We informed the author, but he did not reply.
+# As an alternative, the np package with the npreg function is applied.
 
 # Local linear (degree = 1)
 output_LL_LP <- LP(x = X, X = X, Y = Y, bw = bw, degree = 1L)
@@ -182,3 +197,22 @@ bw_CV_cubic_own <- suppressMessages(bw_CV_fun(X = X, Y = Y, degree = 3L, plot = 
 bw_CV_cubic_locpol <- regCVBwSelC(x = X, y = Y, deg = 3, kernel = EpaK,
                                   interval = interval)
 all.equal(round(bw_CV_cubic_own, 3), round(bw_CV_cubic_locpol, 3)) # Should yield TRUE
+
+################################################################################
+# Tests for confidence_intervals_LP function (asymptotic confidence intervals) #
+################################################################################
+
+######################################
+#    Checks for messages (errors)    #
+######################################
+
+confidence_intervals_invalid_alpha <- confidence_intervals_LP(x = X, X = X, Y = Y, bw = bw,
+                                                              alpha = 0)
+
+####################################################
+#    Checks for asymptotic confidence intervals    #
+####################################################
+
+# We compute the standard errors for the construction of asymptotic confidence
+# intervals for the local polynomial estimator according to Hansen (2022, Section 19.16).
+# Currently, there is no R package available with such an implementation.
