@@ -375,3 +375,64 @@ bw_CV_fun <- function(X, Y, kernel = epanechnikov, bw_grid, degree = 1L,
     return(bw_CV)
 
 }
+
+############################################################################
+#    Asymptotic confidence intervals for the local polynomial estimator    #
+############################################################################
+
+confidence_intervals_LP <- function(x, X, Y, kernel = epanechnikov, bw, degree = 1L, alpha = 0.05) {
+
+    # input: - x: evaluation points (vector)
+    #        - X: data for the regressor (vector)
+    #        - Y: data for the regressand (vector)
+    #        - kernel: kernel (function), with default
+    #        - bw: bandwidth (scalar)
+    #        - degree: degree of the locally fitted polynomial (integer), with default
+    #        - alpha: significance level (scalar), with default
+
+    # output: - list containing
+    #               - confidence_intervals_lower:
+    #                 lower points for the (1 - alpha) asymptotic confidence intervals (vector)
+    #               - confidence_intervals_upper:
+    #                 upper points for the (1 - alpha) asymptotic confidence intervals (vector)
+
+    # Error messages
+    if (alpha <= 0 | alpha >= 1) {
+        stop("The significance level has to be between zero and one.")
+    }
+
+    LP_output <- LP(x = x, X = X, Y = Y, kernel = kernel, bw = bw, degree = degree)
+    estimates <- LP_output$estimates
+    effective_kernels <- LP_output$effective_kernels
+
+    squared_prediction_errors <- ((Y - estimates)/(1 - diag(effective_kernels)))^2
+    error_matrix <- diag(squared_prediction_errors)
+
+    X_matrix <- matrix(NA, length(X), degree + 1)
+    estimates_variance <- rep(NA, length(x))
+
+    for (i in 1:length(x)) {
+
+        for (j in 1:(degree + 1)) {
+
+            X_matrix[, j] <- (X - x[i])^(j - 1)
+
+        }
+
+        W_matrix <- diag(kernel((X - x[i])/bw))
+
+        auxiliary_matrix <- solve(t(X_matrix)%*%W_matrix%*%X_matrix)
+        estimate_covariance_matrix <- auxiliary_matrix %*%
+                                      t(X_matrix)%*%W_matrix%*%error_matrix%*%W_matrix%*%X_matrix %*%
+                                      auxiliary_matrix
+        estimates_variance[i] <- estimate_covariance_matrix[1, 1]
+
+    }
+
+    confidence_intervals_LP_lower <- estimates - qnorm(p = 1 - alpha/2) * sqrt(estimates_variance)
+    confidence_intervals_LP_upper <- estimates + qnorm(p = 1 - alpha/2) * sqrt(estimates_variance)
+
+    list(confidence_intervals_lower = confidence_intervals_LP_lower,
+         confidence_intervals_upper = confidence_intervals_LP_upper)
+
+}
