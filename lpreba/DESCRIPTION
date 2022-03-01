@@ -1,7 +1,7 @@
 Package: lpreba
 Title: Local Polynomial Regression with Option for Explicit Boundary Adjustment
 Version: 0.0.0.9000
-Authors@R: person("Sven", "Jacobs", "s.jacobs@uni-bonn.de", role = c("aut", "cre"))
+Authors@R: person("Sven", "Jacobs", email = "s.jacobs@uni-bonn.de", role = c("aut", "cre"))
 Description: The package implements the local polynomial regression estimator
     of arbitrary degree. Estimates for the regression function (conditional mean),
     its first and second derivative can be obtained. Moreover, computation of
