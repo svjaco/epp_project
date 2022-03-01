@@ -1,0 +1,31 @@
+# Main functions
+export(LP)
+export(NW_boundary)
+export(CV_error_fun)
+export(bw_CV_fun)
+export(confidence_intervals_LP)
+
+# Kernels
+export(uniform)
+export(triangular)
+export(epanechnikov)
+export(biweight)
+export(triweight)
+export(tricube)
+export(cosine)
+
+# Boundary kernels
+export(uniform_left)
+export(epanechnikov_left)
+export(biweight_left)
+export(triweight_left)
+export(uniform_alt_left)
+export(epanechnikov_alt_left)
+export(biweight_alt_left)
+export(triweight_alt_left)
+
+# Imports
+importFrom(graphics,abline)
+importFrom(graphics,legend)
+importFrom(graphics,rug)
+importFrom(stats,qnorm)
