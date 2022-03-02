@@ -15,3 +15,11 @@ Description: The package implements the local polynomial regression estimator
 URL: https://github.com/svjaco/epp_project
 License: MIT
 Encoding: UTF-8
+Imports:
+    graphics,
+    stats
+Suggests:
+    locpol,
+    np,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
