@@ -1,0 +1,55 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2-branch/examples
+
+# GitHub action that runs R CMD check (over 50 individual checks)
+# on the major OS for different versions of R.
+# This also runs all unit tests from the testthat folder.
+
+on:
+  push:
+    paths:
+    - 'lpreba/**'
+  pull_request:
+    paths:
+    - 'lpreba/**'
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check: 
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,  r: 'release'}
+          - {os: ubuntu-latest,  r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: lpreba
+          extra-packages: rcmdcheck
+          
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          working-directory: lpreba
