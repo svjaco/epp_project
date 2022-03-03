@@ -13,3 +13,4 @@ $ conda activate epp_project_sven_jacobs
 ---
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/svjaco/epp_project/blob/main/LICENSE)
+[![R-CMD-check](https://github.com/svjaco/epp_project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/svjaco/epp_project/actions/workflows/R-CMD-check.yaml)
