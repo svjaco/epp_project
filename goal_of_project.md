@@ -11,6 +11,6 @@ Intended features of the package include:
 * Computation of asymptotic confidence intervals.
 
 Moreover, we
-* provide a motivation for the package;
-* provide the theoretical background for the package;
+* provide a motivation for the package; (to be done)
+* provide the theoretical background for the package; (to be done)
 * showcase the practical use of the package through a real-data application.
