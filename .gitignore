@@ -1,1 +1,22 @@
+# R
 .Rhistory
+
+# TeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fff
+*.fls
+*.log
+*.out
+*.gz
+*.xml
+
+# Python
+__pycache__
+.pytask.sqlite3
+
+# Others
+epp_project_sven_jacobs.egg-info/
