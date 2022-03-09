@@ -4,9 +4,17 @@ channels:
   - conda-forge
 
 dependencies:
-  - r-base=4.1.2
+  - r-base
+  - r-haven
+  - r-magrittr
+  - r-dplyr
+  - r-hmisc
+  - r-devtools
 
-  - r-locpol=0.7_0
-  - r-np=0.60_11
+  - python=3.9
+  - pytask
+  - pytask-r
+  - pytask-latex
 
-  - pre_commit=2.17.0
+  - pip
+  - pre_commit
