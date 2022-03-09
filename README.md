@@ -98,6 +98,37 @@ confidence_intervals_lower <- output_confidence_intervals_LP$confidence_interval
 confidence_intervals_upper <- output_confidence_intervals_LP$confidence_intervals_upper
 ```
 
+## Application
+
+To showcase the practical use of the ``lpreba`` package,
+we consider the nonparametric estimation of treatment effects in the regression discontinuity design (RDD).
+
+To build the final manuscript ``application.pdf``, we use the build system [pytask](https://github.com/pytask-dev/pytask).
+First, an environment according to ``environment.yml`` needs to be created.
+Using conda this can be achieved by running in the terminal:
+
+```zsh
+# cd into root of project
+$ conda env create -f environment.yml
+$ conda activate epp_project_sven_jacobs
+$ pip install -e .
+```
+
+To install the ``lpreba`` package, open an R terminal by typing ``R`` in the terminal and run:
+
+```r
+devtools::install_github("svjaco/epp_project/lpreba")
+```
+
+The last step is:
+
+```zsh
+# cd into root of project
+$ pytask
+```
+
+The file ``application.pdf`` is then located in the ``bld`` folder.
+
 ---
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/svjaco/epp_project/blob/main/LICENSE)
