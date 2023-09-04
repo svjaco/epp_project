@@ -1,0 +1,20 @@
+name: epp_project_sven_jacobs
+
+channels:
+  - conda-forge
+
+dependencies:
+  - r-base
+  - r-haven
+  - r-magrittr
+  - r-dplyr
+  - r-hmisc
+  - r-devtools
+
+  - python=3.9
+  - pytask
+  - pytask-r
+  - pytask-latex
+
+  - pip
+  - pre_commit

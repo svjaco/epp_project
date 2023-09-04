@@ -1,0 +1,26 @@
+Package: lpreba
+Title: Local Polynomial Regression with Option for Explicit Boundary Adjustment
+Version: 0.0.0.9000
+Authors@R: person("Sven", "Jacobs", email = "s.jacobs@uni-bonn.de", role = c("aut", "cre"))
+Description: The package implements the local polynomial regression estimator
+    of arbitrary degree. Estimates for the regression function (conditional mean),
+    its first and second derivative can be obtained. Moreover, computation of
+    effective kernels (i.e. effectively assigned weights in the kernel smoothing
+    process) is provided. Different compactly supported kernels (Uniform,
+    Epanechnikov, etc.) are available. For local constant regression
+    (Nadaraya-Watson), explicit boundary adjustment via boundary kernels can be
+    conducted. Different boundary kernels are available. Additional functionality
+    includes bandwidth selection via cross-validation and the computation of
+    asymptotic confidence intervals.
+URL: https://github.com/svjaco/epp_project
+BugReports: https://github.com/svjaco/epp_project/issues
+License: MIT
+Encoding: UTF-8
+Imports:
+    graphics,
+    stats
+Suggests:
+    locpol,
+    np,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
